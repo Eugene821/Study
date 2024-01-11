@@ -1,1 +1,14 @@
+// CodeVision
+// ATmega128 Bluetooth Control [HC-06]
+//
+// < Bluetooth Module spec > 
+// BT Ver : 2.0 EDR
+// Power Level : Class2
+// Baud Rate : 9600(Default)
+// PINCODE : 1234(Default)
+// operating voltage : TTL Level
+
+
+#include <iostream>
+
 
