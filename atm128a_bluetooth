@@ -9,6 +9,75 @@
 // operating voltage : TTL Level
 
 
-#include <iostream>
+#include <mega128a.h>
+#include <delay.h>
+
+char ch;
+void main(void)
+{
+    //설정 초기화
+    DDRA = DDRB = DDRC = DDRD = DDRF = 0xff;// PORT A, B, C, D, F를 output으로 설정
+                                            // input으로 설정했다면, 그 포트는 'PIN'을 사용
+    PORTA = PORTB = PORTC = PORTD = PORTF = 0xff;// PORT A, B, C, D, F의 모든 핀에 5V 전압 출력
+
+    //통신
+    // USART control and status register 0
+
+    UCSR0A = 0x0; // bit7(RxCn) 값만 사용하며, 초기값: 0x00
+                  // 수신된 데이터 확인 유무
+                  // RXCn = 1: 수신버퍼에 아직 읽지 않은 데이터가 존재하는 상태
+                  // RXCn = 0: 수신버퍼를 읽어서 비워져 있는 상태
+
+    UCSR0B = 0x18;// 송수신 상태를 가능하게 만듦
+                  // 초기값: 0x18, bit3(TXENn)= 1, bit4(RXENn) = 1
+                  // TXENn = 1: 송신부 동작 활성화, RXENn = 1: 수신부 동작 활성화
+
+    UCSR0C = 0x06;// character size를 8bit로 선택
+                  // bit1(UCSZn0) = 1
+                  // bit2(UCSZn1) = 1
+
+                  // UBRRn에서 USART 송/수신 속도 설정
+    UBRR0H = 0;   // baud rate(bps) = 9600
+
+
+    UBRR0L = 103; // 상위 바이트는 0x00, 하위 비트에 103 설정.
+                  //   
+
+    //#asm("sei")
+
+    while (1)
+      {
+      while ((UCSR0A & 0x80) == 0); // UCSR0A의 bit7 RXCn = 1: 어떤 값이 수신됨
+                                    // 어떤 값이 수신되지 않을 때까지 반복
+                                    // UDRn: 송/수신되는 데이터값을 저장하는 버퍼
+      ch = UDR0;                    // UDR0의 값을 ch에 저장
+                                     
+      if(ch == 'a')                 // 수신한 값이 'a'와 같을 때
+        {
+        PORTA = 0xaa;
+        delay_ms(200);
+        PORTA = 0x55;
+        delay_ms(200);
+        PORTA = 0xaa;
+        delay_ms(200);
+        PORTA = 0xff;
+        }
+      else if(ch == 'b')             // 송신한 값이 'b'와 같을 때
+        {
+        PORTB = 0xaa;
+        delay_ms(200);
+        PORTB = 0x55;
+        delay_ms(200);
+        PORTB = 0xaa;
+        delay_ms(200);
+        PORTB = 0xff;
+        }
+        
+      while ((UCSR0A & 0x20) == 0);  // UCSR0A의 bit5 UDREn(USART data register empty) = 1:
+                                     // 송신버퍼가 비어있어 새로운 송신 데이터를 받을 준비가 되어 있는 상태
+                                     // 송신버퍼가 차서 새로운 데이터를 받지 못 할 때까지 반복
+      UDR0 = ch;                     // ch의 값을 UDR0에 저장
+      }
+}
 
 
