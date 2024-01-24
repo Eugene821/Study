@@ -1,0 +1,29 @@
+#.py
+from PIL import Image
+
+def image_to_ascii(image_path, output_width=150, char_set='@%#*+=-:. '):
+    image = Image.open(image_path)
+    width, height = image.size
+    aspect_ratio = height/width
+    new_width = output_width
+    new_height = int(output_width * aspect_ratio)
+    
+    resized_image = image.resize((new_width, new_height))
+    grayscale_image = resized_image.convert("L")
+    
+    pixels = grayscale_image.getdata()
+    characters = [char_set[int(pixel / 256 * len(char_set))] for pixel in pixels]
+    
+    ascii_image = "".join(characters)
+    ascii_image_lines = [ascii_image[i:i+new_width] for i in range(0, len(ascii_image), new_width)]
+    
+    return "\n".join(ascii_image_lines)
+
+# 이미지 경로 지정
+image_path = "/content/sample_data/test_img.jpg"
+
+# 아스키 아트로 변환
+ascii_art = image_to_ascii(image_path)
+
+# 결과 출력
+print(ascii_art)
