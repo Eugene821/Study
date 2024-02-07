@@ -1,7 +1,7 @@
 # 비디오 영상에 특수 효과 처리하기
 import cv2
 import numpy as np
-from PyQt5.QtWidgets import *
+from PyQt6.QtWidgets import *
 import sys
     
 class VideoSpecialEffect(QMainWindow):
@@ -56,4 +56,4 @@ class VideoSpecialEffect(QMainWindow):
 app=QApplication(sys.argv) 
 win=VideoSpecialEffect() 
 win.show()
-app.exec_() 
+app.exec() 
