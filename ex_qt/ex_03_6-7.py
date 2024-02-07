@@ -56,4 +56,4 @@ class VideoSpecialEffect(QMainWindow):
 app=QApplication(sys.argv) 
 win=VideoSpecialEffect() 
 win.show()
-app.exec_()
+app.exec_() 
