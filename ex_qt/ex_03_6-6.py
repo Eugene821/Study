@@ -92,4 +92,4 @@ class SpecialEffect(QMainWindow):
 app=QApplication(sys.argv) 
 win=SpecialEffect() 
 win.show()
-app.exec() 
+app.exec()
